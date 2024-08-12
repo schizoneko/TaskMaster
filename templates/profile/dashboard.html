@@ -7,48 +7,105 @@
         
         <meta name = "viewport" content="width-device-width, initial-scale=1, maximum-scale=1"/>
 
-
         <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
-        
         <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
         
         <title> TaskManabu | Dashboard </title>
         
         <style>
-            .custom-layout {
-                width: 600px; 
+            .profile-container {
+                display: flex;
+                align-items: flex-start;
+                
+            }
+            .profile-container2 {
+                display: flex;
+                align-items: flex-start;
+                margin-top: 20px;
             }
 
-            .custom-layout p {
-                font-size: 18px; 
+            .profile-image {
+                flex: 1;
+                text-align: center;
             }
 
-            .custom-layout a {
-                font-size: 20px; 
-                font-weight: bold; 
+          
+            .profile-info {
+                flex: 2;
+                padding-left: 20px;
+            }
+
+            
+
+            .profile-info .form-group {
+                margin-bottom: 15px;
+            }
+
+            .profile-info label {
+                font-weight: bold;
+            }
+
+            .profile-info input[type="text"] {
+                width: 100%;
+                padding: 8px;
+                margin-top: 5px;
+            }
+
+            .profile-info button {
+                margin-top: 20px;
+                
+            }
+
+            .button-form{
+                margin-left: 760px
             }
         </style>
     </head>
 
-    {% include 'profile/base.html'%}
-    <br>
-    <div class="container bg-white shadow-md p-5 form-layout custom-layout">
-
-        <h1> Welcome {{user.username}}!</h1>
-
-        <hr>
-
-
-        <img style ="width: 500px;" src="{{profile.profile_pic.url}}"/>
-
-        
-
-        <br> <br>
-
-        <p>  TaskManabu - Your personal task manager application</p>
-
-        <a href="{% url 'profile_management' %}"> Profile management </a>
-
-    </div>
+    <body>
+        {% include 'profile/base.html' %}
+        <div class="container bg-white shadow-md p-5 mt-4">
+          
+            <div class="profile-container">
+                <div class="profile-image profile-container2">
+                    <img style="width: 500px;" src="{{ profile.profile_pic.url }}" class="img-thumbnail"/>
+                    <br>
+                    
+                </div>
+                
+                <div class="profile-info">
+                    <h2>Basic information</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="full_name">Name</label>
+                            <input type="text" id="full_name" name="full_name" class="form-control" value="{{ form.full_name.value }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday">Date of birth</label>
+                            <input type="text" id="birthday" name="birthday" class="form-control" value="{{ form.birthday.value }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="personality">Personalities</label>
+                            <input type="text" id="personality" name="personality" class="form-control" value="{{ form.personality.value }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="hobbies">Hobbies</label>
+                            <input type="text" id="hobbies" name="hobbies" class="form-control" value="{{ form.hobbies.value }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="skills">Skills</label>
+                            <input type="text" id="skills" name="skills" class="form-control" value="{{ form.skills.value }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="github">GitHub Link</label>
+                            <input type="text" id="github" name="github" class="form-control" value="{{ form.github.value }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary button-form">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
 
 </html>

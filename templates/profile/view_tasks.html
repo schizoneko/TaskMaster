@@ -29,27 +29,48 @@
                 </select>
             </div>
             <br>
+
+            <div class="form-group">
+                <label for="member">Member:</label>
+                <select name="member" id="member" class="form-control">
+                    <option value="" {% if selected_member == "" %}selected{% endif %}>All</option>
+                    {% for user in all_users %}
+                        <option value="{{ user.id }}" {% if selected_member == user.id %}selected{% endif %}>{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+
             <button type="submit" class="btn btn-primary">Filter</button>
         </form>
     </div>
 
-    {% if tasks %}
-        {% for tsk in tasks %}
+    {% if tasks_with_members %}
+        {% for item in tasks_with_members %}
             <div class="container bg-white shadow-md p-5 form-layout" style="margin-top:20px;">
-                <strong>Title:</strong> {{ tsk.title }}
+                <strong>Title:</strong> {{ item.task.title }}
                 <br><br>
-                <strong>Content:</strong> {{ tsk.content }}
+                <strong>Content:</strong> {{ item.task.content }}
                 <br><br>
-                <strong>Date Posted:</strong> {{ tsk.date_posted|date:"d/m/Y H:i:s" }}
+                <strong>Date Posted:</strong> {{ item.task.date_posted|date:"d/m/Y H:i:s" }}
                 <br><br>
                 <strong>Priority:</strong>
-                <span class="priority-{{ tsk.priority }}">
-                    {{ tsk.get_priority_display }}
+                <span class="priority-{{ item.task.priority }}">
+                    {{ item.task.get_priority_display }}
                 </span>
+                
                 <br><br>
-                <a class="btn btn-info navbar-btn" type="button" href="{% url 'update_task' tsk.id %}">Update task</a>
+                <strong>Members:</strong>
+                <ul>
+                    {% for member in item.members %}
+                        <li>{{ member.username }}</li>
+                    {% endfor %}
+                </ul>
                 <br><br>
-                <a class="btn btn-danger navbar-btn" type="button" href="{% url 'delete_task' tsk.id %}">Delete task</a>
+
+                <a class="btn btn-info navbar-btn" type="button" href="{% url 'update_task' project.id item.task.id %}">Update task</a>
+                <br><br>
+                <a class="btn btn-danger navbar-btn" type="button" href="{% url 'delete_task' project.id item.task.id %}">Delete task</a>
             </div>
         {% endfor %}
     {% else %}

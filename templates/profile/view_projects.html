@@ -1,0 +1,67 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+    <title>TaskManabu | View Projects</title>
+    <style>
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px; /* Khoảng cách giữa các nút */
+        }
+    </style>
+</head>
+<body>
+
+{% include 'profile/base.html' %}
+
+<div class="container mt-4">
+    <h1>Your projects </h1>
+    <a class="btn btn-primary mb-4" href="{% url 'create_project' %}">Create a project</a>
+    <hr>
+    {% block content %}
+    {% for project in projects %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3>Project: <a  href="{% url 'update_project' project.id %}"> {{ project.name }} </a></h3>
+                <div class="btn-group">
+
+                    <a class="btn btn-success" href="{% url 'project_chat' project.id %}">Group chat</a>
+                    <a class="btn btn-danger" href="{% url 'delete_project' project.id %}">Delete project</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><strong>Description:</strong> {{ project.description }}</p>
+                <p class="card-text"><strong>Members:</strong></p>
+                <ul>
+                    {% for user in project.users.all %}
+                        <li>
+                            <a href="{% url 'view_user_dashboard' user.id %}">
+                                {{ user.username }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <a class="btn btn-primary" href="{% url 'create_task' project.id %}">Create task</a>
+                <a class="btn btn-info" href="{% url 'view_tasks' project.id %}">View tasks</a>
+            </div>
+        </div>
+    {% endfor %}
+    {% endblock %}
+</div>
+
+</body>
+</html>

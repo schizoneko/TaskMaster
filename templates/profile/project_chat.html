@@ -1,0 +1,179 @@
+{% include 'profile/base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>{{ project.name }} group chat</h2>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        {% for message in messages %}
+        <div class="message {% if message.user == request.user %}message-right{% else %}message-left{% endif %}">
+            <div class="message-info">
+                <strong>{{ message.user.username }}</strong>
+                <span class="timestamp">{{ message.timestamp|date:"H:i, d M Y" }}</span>
+            </div>
+            <div class="message-content">
+                {{ message.content }}
+                {% if message.file %}
+                <div class="message-file">
+                    <a href="{{ message.file.url }}" download>Download file</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="chat-input">
+        <form method="post" class="input-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" id="file-input" name="file" class="file-input">
+            <textarea id="message-input" name="content" rows="1" placeholder="Type a message..." autofocus></textarea>
+            <button type="submit" class="send-button">Send
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 90vh;
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #f5f5f5;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-top:7px
+    }
+
+    .chat-header {
+        padding: 10px;
+        background-color: #065d15;
+        color: white;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background-color: #e5ddd5;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        max-width: 75%;
+        word-wrap: break-word;
+    }
+
+    .message-left {
+        align-self: flex-start;
+    }
+
+    .message-right {
+        align-self: flex-end;
+        margin-left: auto; 
+        text-align: right;
+    }
+
+    .message-info {
+        margin-bottom: 3px;
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    .message-right .message-info {
+        text-align: right;
+    }
+
+    .message-content {
+        padding: 8px 12px;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+    .message-right .message-content {
+        background-color: #dcf8c6;
+    }
+
+    .message-file {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+
+    .chat-input {
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 0 0 10px 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-form {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .file-input {
+        margin-bottom: 5px;
+    }
+
+    #message-input {
+        flex: 1;
+        padding: 7px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+        resize: none;
+        margin-bottom: 5px;
+    }
+
+    .send-button {
+        background-color: #065d15;
+        color: white;
+        border: none;
+        
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .send-button:hover {
+        background-color: #057b3e;
+    }
+
+    .fas.fa-paper-plane {
+        font-size: 1.2em;
+    }
+</style>
+
+<script>
+    // Auto scroll to the bottom of the chat messages
+    var chatMessages = document.getElementById('chat-messages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Auto resize the textarea based on input
+    var messageInput = document.getElementById('message-input');
+    messageInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
+</script>
+
+{% endblock %}

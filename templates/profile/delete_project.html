@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+    <title>TaskManabu | Delete Project</title>
+</head>
+<body>
+
+{% include 'profile/base.html' %}
+
+<div class="container">
+    <h1>Delete Project</h1>
+    <div class="alert alert-warning" role="alert">
+        <strong>Warning!</strong> Are you sure you want to delete the project "{{ project.name }}"? This action cannot be undone.
+    </div>
+    <form method="POST" action="{% url 'delete_project' project.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Project</button>
+        <a href="{% url 'view_projects' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+</body>
+</html>
