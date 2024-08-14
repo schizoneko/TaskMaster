@@ -39,9 +39,13 @@ def my_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect("dashboard")
+                return redirect("mypage")
     context = {'form': form}
     return render(request, 'my_login.html', context=context)
+
+#- My page:
+def mypage(request):
+    return render(request, 'profile/mypage.html')
 
 # Dashboard người dùng
 
@@ -50,10 +54,12 @@ def dashboard(request):
     profile = Profile.objects.get(user=request.user)
 
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('dashboard')  
+            return redirect('dashboard')
+        else:
+            print(form.errors)  # In ra lỗi nếu form không hợp lệ
     else:
         form = ProfileForm(instance=profile)
 
@@ -62,6 +68,8 @@ def dashboard(request):
         'form': form,
     }
     return render(request, 'profile/dashboard.html', context=context)
+
+
 # Quản lý hồ sơ người dùng
 @login_required(login_url='my_login')
 def profile_management(request):
@@ -101,18 +109,25 @@ def createTask(request, project_id):
     project = get_object_or_404(Project, id=project_id, users=request.user)
     if request.method == 'POST':
         form = CreateTaskForm(request.POST, request.FILES, project=project)
-        
         if form.is_valid():
-            task = form.save(commit=False)
-            task.project = project
-            task.save()
-            form.save_m2m()  # Save many-to-many data
-            return redirect('view_tasks', project_id=project.id)
+            task_title = form.cleaned_data.get('title')
+            task_content = form.cleaned_data.get('content')
+            analysis = analyze_task_content(task_title, task_content)
+            if "The content does not match the title" in analysis:
+                # Display a warning with the AI's explanation and suggestion
+                messages.warning(request, f"The task content may need improvement. {analysis}")
+                return render(request, 'profile/create_task.html', {'form': form, 'project': project})
+            else:
+                # Save the task if the content is appropriate
+                task = form.save(commit=False)
+                task.project = project
+                task.save()
+                form.save_m2m()  # Save many-to-many data
+                return redirect('view_tasks', project_id=project.id)
     else:
         form = CreateTaskForm(project=project)
     context = {'form': form, 'project': project}
     return render(request, 'profile/create_task.html', context)
-
 # Xem tasks
 
 @login_required(login_url='my_login')
@@ -151,12 +166,14 @@ def viewTasks(request, project_id):
     
     return render(request, 'profile/view_tasks.html', context)
 # Cập nhật task
+"""
 @login_required(login_url='my_login')
 def updateTask(request, project_id, pk):
     project = get_object_or_404(Project, id=project_id, users=request.user)
     task = get_object_or_404(Task, id=pk, project=project)
     
     if request.method == 'POST':
+        
         form = UpdateTaskForm(request.POST, instance=task, project=project)
         if form.is_valid():
             updated_task = form.save(commit=False)
@@ -168,7 +185,37 @@ def updateTask(request, project_id, pk):
     
     context = {'form': form, 'project': project}
     return render(request, 'profile/update_task.html', context=context)
+"""
+@login_required(login_url='my_login')
+def updateTask(request, project_id, pk):
+    project = get_object_or_404(Project, id=project_id, users=request.user)
+    task = get_object_or_404(Task, id=pk, project=project)
 
+    if request.method == 'POST':
+        form = UpdateTaskForm(request.POST, request.FILES, instance=task, project=project)
+        if form.is_valid():
+            task_title = form.cleaned_data.get('title')
+            task_content = form.cleaned_data.get('content')
+            analysis = analyze_task_content(task_title, task_content)
+
+            if "The content does not match the title" in analysis:
+                # Display a warning with the AI's explanation and suggestion
+                messages.warning(request, f"The task content may need improvement. {analysis}")
+                return render(request, 'profile/update_task.html', {'form': form, 'project': project})
+            else:
+                # Save the task if the content is appropriate
+                updated_task = form.save(commit=False)
+                updated_task.save()
+                form.save_m2m()  # Save many-to-many data if applicable
+                return redirect('view_tasks', project_id=project.id)
+        else:
+            # Handle form errors if the form is not valid
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UpdateTaskForm(instance=task, project=project)
+
+    context = {'form': form, 'project': project}
+    return render(request, 'profile/update_task.html', context)
 # Xóa task
 @login_required(login_url='my_login')
 def deleteTask(request, project_id, pk):
@@ -250,13 +297,12 @@ def view_user_dashboard(request, user_id):
 
 
 #- Group chat
-@login_required(login_url='my_login')
 def project_chat(request, project_id):
     project = get_object_or_404(Project, id=project_id, users=request.user)
     messages = project.messages.all().order_by('timestamp')
 
     if request.method == 'POST':
-        form = MessageForm(request.POST, request.FILES)  # Thêm request.FILES để xử lý file uploads
+        form = MessageForm(request.POST, request.FILES)
         if form.is_valid():
             message = form.save(commit=False)
             message.project = project
@@ -275,15 +321,19 @@ def project_chat(request, project_id):
 
 
 
+#============================================================================================================================
 
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from .models import Task
+from .ai_utils import analyze_task_content, summarize_text  
 
+@login_required(login_url='my_login')
+def explain_task_content(request, project_id, task_id):
+    task = get_object_or_404(Task, id=task_id, project_id=project_id)
+    explanation = summarize_text(task.content)  
 
-
-
-
-
-
-
+    return JsonResponse({'explanation': explanation})
 
 
 

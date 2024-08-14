@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 
-    <title>TaskManabu | View Projects</title>
+    <title>TaskMaster | View Projects</title>
     <style>
         .card-header {
             display: flex;
@@ -22,6 +22,7 @@
             display: flex;
             gap: 10px; /* Khoảng cách giữa các nút */
         }
+        
     </style>
 </head>
 <body>
@@ -29,12 +30,11 @@
 {% include 'profile/base.html' %}
 
 <div class="container mt-4">
-    <h1>Your projects </h1>
-    <a class="btn btn-primary mb-4" href="{% url 'create_project' %}">Create a project</a>
+    <h1>Your projects: </h1>
     <hr>
     {% block content %}
     {% for project in projects %}
-        <div class="card mb-3">
+        <div class="card mb-4">
             <div class="card-header">
                 <h3>Project: <a  href="{% url 'update_project' project.id %}"> {{ project.name }} </a></h3>
                 <div class="btn-group">

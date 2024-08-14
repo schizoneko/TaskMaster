@@ -8,6 +8,7 @@ urlpatterns = [
     path('', views.home, name=''),
     path('register/', views.register, name='register'),
     path('login/', views.my_login, name='my_login'),
+    path('mypage/', views.mypage, name='mypage'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile_management, name='profile_management'),
     path('delete_account/', views.deleteAccount, name='delete_account'),
@@ -22,6 +23,7 @@ urlpatterns = [
     # Task URLs
     path('create_task/<int:project_id>/', views.createTask, name='create_task'),
     path('view_tasks/<int:project_id>/', views.viewTasks, name='view_tasks'),
+    
     path('update_task/<int:project_id>/<int:pk>/', views.updateTask, name='update_task'),
     path('delete_task/<int:project_id>/<int:pk>/', views.deleteTask, name='delete_task'),
 
@@ -31,6 +33,10 @@ urlpatterns = [
     #Group chat
      path('project/<int:project_id>/chat/', views.project_chat, name='project_chat'),
 
+
+    #AI
+    #path('project/<int:project_id>/task/<int:task_id>/explain/', views.explain_task_content, name='explain_task_content'),
+    path('explain_task_content/<int:project_id>/<int:task_id>/', views.explain_task_content, name='explain_task_content'),
 ]
 
 

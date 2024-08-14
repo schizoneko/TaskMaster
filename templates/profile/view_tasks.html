@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <title>TaskManabu | View tasks</title>
+    <title>TaskMaster | View tasks</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 {% include 'profile/base.html' %}
@@ -58,7 +59,6 @@
                 <span class="priority-{{ item.task.priority }}">
                     {{ item.task.get_priority_display }}
                 </span>
-                
                 <br><br>
                 <strong>Members:</strong>
                 <ul>
@@ -66,11 +66,17 @@
                         <li>{{ member.username }}</li>
                     {% endfor %}
                 </ul>
-                <br><br>
+                
 
+                <!-- Khu vực để hiển thị AI Explanation -->
+                <div class="explanation-content"></div>
+                <br>
+                
                 <a class="btn btn-info navbar-btn" type="button" href="{% url 'update_task' project.id item.task.id %}">Update task</a>
-                <br><br>
+                
                 <a class="btn btn-danger navbar-btn" type="button" href="{% url 'delete_task' project.id item.task.id %}">Delete task</a>
+                
+                <button class="btn btn-warning navbar-btn" type="button" onclick="getExplanation('{{ project.id }}', '{{ item.task.id }}', this)">Content explanation</button>
             </div>
         {% endfor %}
     {% else %}
@@ -78,5 +84,20 @@
             <p>No tasks found.</p>
         </div>
     {% endif %}
+    
+    <script>
+        function getExplanation(projectId, taskId, button) {
+            $.ajax({
+                url: `/explain_task_content/${projectId}/${taskId}/`,
+                type: 'GET',
+                success: function(response) {
+                    $(button).closest('.container').find('.explanation-content').html('<strong>Content Explanation:</strong> <p>' + response.explanation + '</p>');
+                },
+                error: function(response) {
+                    console.error("Error:", response);
+                }
+            });
+        }
+    </script>
 </body>
 </html>

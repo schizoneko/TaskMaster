@@ -20,14 +20,29 @@
                     <a href="{{ message.file.url }}" download>Download file</a>
                 </div>
                 {% endif %}
+                {% if message.reply_to %}
+                <div class="message-reply">
+                    <p><strong>Replying to:</strong> {{ message.reply_to.content }}</p>
+                </div>
+                {% endif %}
+            </div>
+            <div class="reply-button">
+                <a href="#" onclick="setReplyTo('{{ message.id }}', '{{ message.content|escapejs }}', '{{ message.user.username|escapejs }}'); return false;">Reply</a>
             </div>
         </div>
         {% endfor %}
     </div>
 
     <div class="chat-input">
+        <!-- Section to display the message being replied to -->
+        <div id="reply-info" class="reply-info">
+            <!-- Default content or empty if no reply -->
+            <button id="cancel-reply" class="cancel-reply" onclick="cancelReply();">Cancel Reply</button>
+        </div>
+
         <form method="post" class="input-form" enctype="multipart/form-data">
             {% csrf_token %}
+            <input type="hidden" id="id_reply_to" name="reply_to" value="">
             <input type="file" id="file-input" name="file" class="file-input">
             <textarea id="message-input" name="content" rows="1" placeholder="Type a message..." autofocus></textarea>
             <button type="submit" class="send-button">Send
@@ -48,7 +63,7 @@
         border-radius: 10px;
         background-color: #f5f5f5;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        margin-top:7px
+        margin-top: 7px;
     }
 
     .chat-header {
@@ -110,6 +125,13 @@
         font-size: 0.9em;
     }
 
+    .message-reply {
+        margin-top: 5px;
+        padding: 5px;
+        background-color: #f0f0f0;
+        border-left: 3px solid #065d15;
+    }
+
     .chat-input {
         padding: 10px;
         background-color: #fff;
@@ -117,6 +139,27 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .reply-info {
+        padding: 10px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .cancel-reply {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+        cursor: pointer;
+        font-size: 0.8em;
     }
 
     .input-form {
@@ -143,7 +186,6 @@
         background-color: #065d15;
         color: white;
         border: none;
-        
         border-radius: 10px;
         padding: 10px;
         margin-top: 5px;
@@ -174,6 +216,21 @@
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
     });
+
+    // Set the reply_to field value and display reply info
+    function setReplyTo(messageId, messageContent, userName) {
+        document.getElementById('id_reply_to').value = messageId;
+        var replyInfo = document.getElementById('reply-info');
+        replyInfo.innerHTML = '<p><strong>Replying to:</strong> ' + userName + ': ' + messageContent + '</p><button id="cancel-reply" class="cancel-reply" onclick="cancelReply();">Cancel Reply</button>';
+        document.getElementById('message-input').focus();
+    }
+
+    // Cancel reply and clear the reply info
+    function cancelReply() {
+        document.getElementById('id_reply_to').value = '';
+        var replyInfo = document.getElementById('reply-info');
+        replyInfo.innerHTML = '';
+    }
 </script>
 
 {% endblock %}

@@ -1,0 +1,71 @@
+{% include 'profile/base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to TaskMaster</title>
+    <!-- Bootstrap Theme -->
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    
+    <style>
+        .list-group-item strong {
+            font-size: 1.25rem; 
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center text-primary">Welcome to TaskMaster!</h1>
+                <h3>
+                    <p class="card-text">
+                        Your all-in-one solution for managing projects and tasks. TaskMaster is designed to help you stay organized and collaborate efficiently with your team. Here's what you can do:
+                    </p>
+                </h3>
+                <br>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item">
+                        <strong class="text-primary">Edit Personal Information:</strong> Update your profile to keep your account information up to date.
+                    </li>
+                    <br>
+
+                    <li class="list-group-item">
+                        <strong class="text-primary">Create Projects:</strong> Organize your work by creating projects. Each project has its own dedicated group chat for seamless team communication.
+                    </li>
+                    <br>
+
+                    <li class="list-group-item">
+                        <strong class="text-primary">Create and Manage Tasks:</strong> Break down your work into tasks within each project. Assign tasks, set priorities, and track progress.
+                    </li>
+                    <br>
+
+                    <li class="list-group-item">
+                        <strong class="text-primary">Search and Filter Tasks:</strong> Easily find tasks by filtering based on priority and task members.
+                    </li>
+                    <br>
+
+                    <li class="list-group-item">
+                        <strong class="text-primary">AI Integration:</strong> The AI assesses the detail level of task content upon creation and generates a comprehensive explanation of the task's contents
+                    </li>
+                    <br>
+                    <li class="list-group-item">
+                        <strong class="text-primary">Account Settings:</strong> Change your account details anytime
+                    </li>
+                </ul>
+
+                <div class="text-center">
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary">Edit your profile now</a>
+                    
+                    <a href="{% url 'create_project' %}" class="btn btn-primary">Create a new project</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
