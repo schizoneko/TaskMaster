@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import google.generativeai as genai # type: ignore
 from todo.local_settings import API_KEY
 
 

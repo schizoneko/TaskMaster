@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
 from django import forms
 from .models import Project, Task, Profile, Message
-from django_select2.forms import Select2MultipleWidget
+from django_select2.forms import Select2MultipleWidget # type: ignore
 
 # - Register an user
 class CreateUserForm(UserCreationForm):
