@@ -1,23 +1,25 @@
 import os
-from pathlib import Path
-from dotenv import load_dotenv
 
-# Load environment variables from a .env file
-load_dotenv()
+
+
+
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-qs4lb=ti@k=3*!ad!7zkr8ht6tb#hmc)*#--y1k9(r(5+g493&')
+SECRET_KEY = 'django-insecure-qs4lb=ti@k=3*!ad!7zkr8ht6tb#hmc)*#--y1k9(r(5+g493&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -68,7 +70,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskly.wsgi.application'
 
-# Database configuration
+
+# Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
@@ -77,6 +80,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -96,6 +100,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -107,25 +112,26 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# - Method 1
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+
 MEDIA_URL = '/images/'
+
 MEDIA_ROOT = BASE_DIR / 'static/images'
+
+
+# - Method 2
+#STATICFILES_DIRS = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Vercel-specific settings
-if os.getenv('VERCEL_ENV') == '1':
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    
-    # Update ALLOWED_HOSTS for Vercel
-    ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
-
-    # Add any additional Vercel-specific settings here
