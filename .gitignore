@@ -1,4 +1,6 @@
 __pycache__/
 todo/local_settings.py
-todo/__pycache__/
-taskly/__pycache__/
+.vscode/
+.idea/
+venv/
+env/
