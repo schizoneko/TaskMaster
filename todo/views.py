@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Project, Task, Profile
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 # Trang chủ
 def home(request):
@@ -40,6 +42,11 @@ def my_login(request):
             if user is not None:
                 auth.login(request, user)
                 return redirect("mypage")
+            else:
+                context = {'form': form, 'error': 'Invalid username or password'}
+                return render(request, 'login.html', context)
+        else:
+            form = AuthenticationForm()
     context = {'form': form}
     return render(request, 'my_login.html', context=context)
 

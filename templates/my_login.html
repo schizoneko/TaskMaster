@@ -64,7 +64,9 @@
 
             {% endfor %}
 
-            
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
 
             <p> Don't have an account? <a href="{% url 'register' %}"> <br> Register </a></p>
 
