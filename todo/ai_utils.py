@@ -1,5 +1,5 @@
 import google.generativeai as genai
-from local_settings import API_KEY
+from todo.local_settings import API_KEY
 
 
 genai.configure(api_key=API_KEY)
